@@ -96,7 +96,7 @@ const About = () => {
           Profoundly self-motivated and aspiring CSE student at MNM Jain Engineering College, looking
           for opportunities to develop and design software where I can utilise and enhance my skills.
           Self-trained developer intrigued by <span className="text-primary font-semibold">Full Stack Development</span> and{' '}
-          <span className="text-accent font-semibold">Responsive Web Development</span>. Currently a
+          <span className="text-accent font-semibold">Responsive Web Development</span>.Previously worked as a
           Full-Stack Developer Intern at KreupAI Technologies LLC, contributing to end-to-end web
           application development across frontend and backend.
         </motion.p>
