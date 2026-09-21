@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaSun, FaMoon } from 'react-icons/fa';
 import useTheme from '../hooks/useTheme';
 
-const Navbar = () => {
+const Navbar = ({ currentPage, setCurrentPage }) => {
   const [activeSection, setActiveSection] = useState('home');
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -26,6 +26,9 @@ const Navbar = () => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
 
+      // Only track scroll-based active section on the portfolio page
+      if (currentPage !== 'portfolio') return;
+
       // Update active section based on scroll position
       const sections = links.map(link => document.getElementById(link.id));
       const scrollPosition = window.scrollY + 100;
@@ -44,20 +47,59 @@ const Navbar = () => {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [currentPage]);
 
   // Smooth scroll to section
   const scrollToSection = (e, sectionId) => {
     e.preventDefault();
-    const element = document.getElementById(sectionId);
-    if (element) {
-      const offsetTop = element.offsetTop - 80; // Account for navbar height
-      window.scrollTo({
-        top: offsetTop,
-        behavior: 'smooth'
-      });
+
+    // If we're on the freelancer page, switch back to portfolio first
+    if (currentPage !== 'portfolio') {
+      setCurrentPage('portfolio');
+      setIsMobileMenuOpen(false);
+      // Wait for the portfolio to render, then scroll
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          const offsetTop = element.offsetTop - 80;
+          window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+        }
+      }, 100);
+      return;
     }
+
+    // Close mobile menu first
     setIsMobileMenuOpen(false);
+
+    // Delay scroll to let mobile menu exit animation complete
+    setTimeout(() => {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        const offsetTop = element.offsetTop - 80; // Account for navbar height
+        window.scrollTo({
+          top: offsetTop,
+          behavior: 'smooth'
+        });
+      }
+    }, 350);
+  };
+
+  // Handle Freelancer tab click
+  const handleFreelancerClick = (e) => {
+    e.preventDefault();
+    setIsMobileMenuOpen(false);
+    setCurrentPage('freelancer');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Handle logo / brand click -> go back to portfolio
+  const handleBrandClick = () => {
+    if (currentPage !== 'portfolio') {
+      setCurrentPage('portfolio');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   return (
@@ -72,9 +114,10 @@ const Navbar = () => {
     >
       <div className="container mx-auto flex justify-between items-center p-4">
         <motion.div
-          className="text-xl font-bold whitespace-nowrap bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"
+          className="text-xl font-bold whitespace-nowrap bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent cursor-pointer"
           whileHover={{ scale: 1.05 }}
           transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+          onClick={handleBrandClick}
         >
           Iniyan S
         </motion.div>
@@ -91,14 +134,14 @@ const Navbar = () => {
               <a
                 href={`#${link.id}`}
                 onClick={(e) => scrollToSection(e, link.id)}
-                className={`px-3 py-2 rounded-lg block whitespace-nowrap transition-colors duration-200 ${activeSection === link.id
+                className={`px-3 py-2 rounded-lg block whitespace-nowrap transition-colors duration-200 ${currentPage === 'portfolio' && activeSection === link.id
                   ? 'text-primary font-semibold'
                   : 'text-text-secondary hover:text-primary'
                   }`}
               >
                 {link.name}
               </a>
-              {activeSection === link.id && (
+              {currentPage === 'portfolio' && activeSection === link.id && (
                 <motion.div
                   className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary to-accent mx-3"
                   layoutId="activeTab"
@@ -107,6 +150,31 @@ const Navbar = () => {
               )}
             </motion.li>
           ))}
+
+          {/* Freelancer Tab */}
+          <motion.li
+            className="relative"
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+          >
+            <a
+              href="#freelancer"
+              onClick={handleFreelancerClick}
+              className={`px-3 py-2 rounded-lg block whitespace-nowrap transition-colors duration-200 font-medium ${currentPage === 'freelancer'
+                ? 'text-accent font-semibold'
+                : 'text-accent/70 hover:text-accent'
+                }`}
+            >
+              🚀 Freelancer
+            </a>
+            {currentPage === 'freelancer' && (
+              <motion.div
+                className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-accent to-primary mx-3"
+                layoutId="activeTab"
+                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              />
+            )}
+          </motion.li>
 
           {/* Theme Toggle Button */}
           <motion.button
@@ -202,7 +270,7 @@ const Navbar = () => {
                   <a
                     href={`#${link.id}`}
                     onClick={(e) => scrollToSection(e, link.id)}
-                    className={`block py-2 px-4 rounded-lg transition-colors ${activeSection === link.id
+                    className={`block py-2 px-4 rounded-lg transition-colors ${currentPage === 'portfolio' && activeSection === link.id
                       ? 'bg-primary/10 text-primary'
                       : 'text-text-secondary'
                       }`}
@@ -211,6 +279,24 @@ const Navbar = () => {
                   </a>
                 </motion.li>
               ))}
+
+              {/* Freelancer Tab - Mobile */}
+              <motion.li
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: links.length * 0.05 }}
+              >
+                <a
+                  href="#freelancer"
+                  onClick={handleFreelancerClick}
+                  className={`block py-2 px-4 rounded-lg transition-colors font-medium ${currentPage === 'freelancer'
+                    ? 'bg-accent/10 text-accent'
+                    : 'text-accent/70'
+                    }`}
+                >
+                  🚀 Freelancer
+                </a>
+              </motion.li>
             </ul>
           </motion.div>
         )}
