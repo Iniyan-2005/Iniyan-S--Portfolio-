@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { FaChevronLeft, FaChevronRight, FaLinkedin } from 'react-icons/fa';
 import { projects } from '../data/projects';
 
 // Tech-color mapping for distinct tag colours
@@ -21,6 +21,12 @@ const techColors = {
   'OpenWeather API': 'bg-sky-500/10 text-sky-700 border-sky-500/20',
   'Zoho Catalyst': 'bg-red-500/10 text-red-700 border-red-500/20',
   'UI/UX Design': 'bg-pink-500/10 text-pink-700 border-pink-500/20',
+  'Supabase': 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
+  'NVIDIA Nemotron': 'bg-lime-500/10 text-lime-700 border-lime-500/20',
+  'Razorpay API': 'bg-blue-600/10 text-blue-700 border-blue-600/20',
+  'Bright Data': 'bg-orange-500/10 text-orange-600 border-orange-500/20',
+  'Gemini AI': 'bg-violet-500/10 text-violet-600 border-violet-500/20',
+  'Tailwind CSS': 'bg-sky-500/10 text-sky-600 border-sky-500/20',
 };
 
 const getTechClass = (tech) =>
@@ -104,6 +110,18 @@ const ProjectCard = ({ project, index, isActive }) => {
               transition={{ duration: 0.2 }}
             >
               GitHub →
+            </motion.a>
+          )}
+          {project.linkedin && (
+            <motion.a
+              href={project.linkedin}
+              className="text-blue-500 font-semibold text-sm hover:text-blue-400 hover:underline flex items-center gap-1"
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ x: 3 }}
+              transition={{ duration: 0.2 }}
+            >
+              <FaLinkedin className="text-base" /> Post
             </motion.a>
           )}
         </div>

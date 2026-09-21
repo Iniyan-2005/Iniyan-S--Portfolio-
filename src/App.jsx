@@ -13,34 +13,44 @@ import Achievements from './components/Achievements';
 import Social from './components/Social';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
-import CustomCursor from './components/CustomCursor';
+// import CustomCursor from './components/CustomCursor';
 import SectionDivider from './components/SectionDivider';
+import FreelancerPage from './components/FreelancerPage';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState('portfolio');
 
   return (
     <>
       {isLoading && <Loader onComplete={() => setIsLoading(false)} />}
       <div className={`bg-background text-text-main ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-500`}>
-        <CustomCursor />
-        <Navbar />
-        <main>
-          <Hero />
-          <SectionDivider />
-          <About />
-          <SectionDivider />
-          <Resume />
-          <SectionDivider />
-          <Projects />
-          <SectionDivider />
-          <Academics />
-          <SectionDivider />
-          <Achievements />
-          <SectionDivider />
-          <Social />
-          <SectionDivider />
-        </main>
+        {/* <CustomCursor /> */}
+        <Navbar currentPage={currentPage} setCurrentPage={setCurrentPage} />
+
+        {currentPage === 'portfolio' ? (
+          <main>
+            <Hero />
+            <SectionDivider />
+            <About />
+            <SectionDivider />
+            <Resume />
+            <SectionDivider />
+            <Projects />
+            <SectionDivider />
+            <Academics />
+            <SectionDivider />
+            <Achievements />
+            <SectionDivider />
+            <Social />
+            <SectionDivider />
+          </main>
+        ) : (
+          <main>
+            <FreelancerPage />
+          </main>
+        )}
+
         <Footer />
       </div>
       <Analytics />
