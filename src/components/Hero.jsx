@@ -133,7 +133,7 @@ const Hero = () => {
               }}
             >
               <span className={`text-lg ${item.color}`}>{item.icon}</span>
-              <span className="text-xs font-semibold text-white/80 whitespace-nowrap">{item.label}</span>
+              <span className="text-xs font-semibold text-text-main dark:text-white/80 whitespace-nowrap">{item.label}</span>
             </motion.div>
           </motion.div>
         ))}
@@ -174,7 +174,7 @@ const Hero = () => {
           <motion.img
             src="/hero.png"
             alt="Iniyan S"
-            className="w-auto h-[35vh] md:h-[45vh] lg:h-[55vh] max-h-[400px] object-cover rounded-3xl border border-white/10 shadow-[0_0_50px_rgba(255,255,255,0.15)]"
+            className="w-auto h-[35vh] md:h-[45vh] lg:h-[55vh] max-h-[400px] object-cover rounded-3xl border border-border dark:border-white/10 shadow-[0_8px_40px_rgba(67,56,202,0.18)] dark:shadow-[0_0_50px_rgba(255,255,255,0.15)]"
             whileHover={{ scale: 1.03, y: -5 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
           />
@@ -236,9 +236,9 @@ const Hero = () => {
         animate={{ y: [0, 10, 0] }}
         transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
       >
-        <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center pt-2">
+        <div className="w-6 h-10 border-2 border-primary/40 dark:border-white/30 rounded-full flex justify-center pt-2">
           <motion.div
-            className="w-1.5 h-1.5 bg-white rounded-full"
+            className="w-1.5 h-1.5 bg-primary dark:bg-white rounded-full"
             animate={{ y: [0, 12, 0], opacity: [1, 0, 1] }}
             transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
           />

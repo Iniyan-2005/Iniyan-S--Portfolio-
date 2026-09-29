@@ -7,25 +7,25 @@
    PREMIUM COLOR SYSTEM
    ========================================== */
 :root {
-  /* Light theme - Clean & Professional */
-  --background: #fafafa;
-  --background-secondary: #f4f4f5;
-  --primary: #4f46e5;
+  /* Light theme - Vibrant & Professional */
+  --background: #f8f9ff;
+  --background-secondary: #eef0fb;
+  --primary: #4338ca;
   --primary-light: #6366f1;
-  --primary-dark: #4338ca;
-  --accent: #0ea5e9;
-  --accent-light: #38bdf8;
-  --accent-dark: #0284c7;
-  --text-main: #0f172a;
-  --text-secondary: #475569;
-  --text-body: #334155;
-  --border: #e2e8f0;
+  --primary-dark: #3730a3;
+  --accent: #0284c7;
+  --accent-light: #0ea5e9;
+  --accent-dark: #0369a1;
+  --text-main: #0f0f1a;
+  --text-secondary: #3730a3;
+  --text-body: #1e1b4b;
+  --border: #c7d2fe;
   --card: #ffffff;
-  --card-border: rgba(15, 23, 42, 0.08);
-  --section-alt: #f1f5f9;
-  --gradient-start: #4f46e5;
+  --card-border: rgba(67, 56, 202, 0.12);
+  --section-alt: #eef0fb;
+  --gradient-start: #4338ca;
   --gradient-mid: #6366f1;
-  --gradient-end: #0ea5e9;
+  --gradient-end: #0284c7;
 }
 
 .dark {
@@ -201,3 +201,18 @@ section {
 }
 
 /* Removed prefers-color-scheme to avoid conflict with class-based dark mode */
+
+/* ==========================================
+   LIGHT MODE ENHANCEMENTS
+   ========================================== */
+
+/* Richer card elevation in light mode */
+:root .bg-card,
+:root [class*="bg-card"] {
+  box-shadow: 0 1px 3px rgba(67, 56, 202, 0.06), 0 4px 16px rgba(67, 56, 202, 0.08);
+}
+
+/* Stronger section dividers in light mode */
+:root section {
+  border-color: rgba(67, 56, 202, 0.08);
+}
