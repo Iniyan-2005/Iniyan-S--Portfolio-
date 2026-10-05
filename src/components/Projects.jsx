@@ -2,6 +2,12 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaChevronLeft, FaChevronRight, FaLinkedin } from 'react-icons/fa';
 import { projects } from '../data/projects';
+import GSAPReferenceCarousel from './GSAPReferenceCarousel/GSAPReferenceCarousel';
+
+// =========================================================================
+// PREVIOUS CAROUSEL IMPLEMENTATION (Preserved - DO NOT DELETE)
+// Uncomment the code below to restore the previous 3D carousel if needed.
+// =========================================================================
 
 // Tech-color mapping for distinct tag colours
 const techColors = {
@@ -44,7 +50,7 @@ const gradients = [
   'from-sky-500 to-indigo-500',
 ];
 
-const ProjectCard = ({ project, index, isActive }) => {
+export const ExistingProjectCard = ({ project, index, isActive }) => {
   const gradient = gradients[index % gradients.length];
 
   return (
@@ -130,7 +136,7 @@ const ProjectCard = ({ project, index, isActive }) => {
   );
 };
 
-const Projects = () => {
+export const ExistingCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleNext = () => {
@@ -142,11 +148,93 @@ const Projects = () => {
   };
 
   return (
+    <div className="relative w-full flex flex-col items-center justify-center perspective-[1200px]">
+      <div className="relative w-full max-w-[280px] sm:max-w-[320px] md:max-w-sm lg:max-w-md h-[460px] md:h-[480px] flex items-center justify-center z-10">
+        {projects.map((project, index) => {
+          let relativeIndex = index - currentIndex;
+          if (relativeIndex > projects.length / 2) relativeIndex -= projects.length;
+          if (relativeIndex < -projects.length / 2) relativeIndex += projects.length;
+
+          const isVisible = Math.abs(relativeIndex) <= 2;
+          if (!isVisible && projects.length > 5) return null;
+
+          const isActive = relativeIndex === 0;
+
+          return (
+            <motion.div
+              key={project.id}
+              className="absolute w-full h-full origin-center"
+              initial={false}
+              animate={{
+                scale: isActive ? 1 : 1 - Math.abs(relativeIndex) * 0.12,
+                opacity: isActive ? 1 : 1 - Math.abs(relativeIndex) * 0.35,
+                x: `${relativeIndex * 50}%`,
+                rotateY: relativeIndex * -10,
+                z: -Math.abs(relativeIndex) * 60,
+                zIndex: projects.length - Math.abs(relativeIndex),
+              }}
+              transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
+              style={{ transformStyle: 'preserve-3d', cursor: 'grab' }}
+              whileTap={{ cursor: 'grabbing' }}
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.2}
+              onDragEnd={(e, { offset }) => {
+                const swipe = offset.x;
+                if (swipe < -40) {
+                  handleNext();
+                } else if (swipe > 40) {
+                  handlePrev();
+                }
+              }}
+            >
+              <ExistingProjectCard project={project} index={index} isActive={isActive} />
+            </motion.div>
+          );
+        })}
+      </div>
+
+      {/* Carousel Controls */}
+      <div className="flex items-center gap-6 mt-8 md:mt-10 z-20">
+        <button
+          onClick={handlePrev}
+          className="p-3 md:p-4 rounded-full bg-card shadow-lg border border-card-border hover:bg-primary/10 text-primary transition-all hover:scale-110 active:scale-95"
+          aria-label="Previous Project"
+        >
+          <FaChevronLeft className="text-xl" />
+        </button>
+        <button
+          onClick={handleNext}
+          className="p-3 md:p-4 rounded-full bg-card shadow-lg border border-card-border hover:bg-primary/10 text-primary transition-all hover:scale-110 active:scale-95"
+          aria-label="Next Project"
+        >
+          <FaChevronRight className="text-xl" />
+        </button>
+      </div>
+
+      {/* Indicators */}
+      <div className="flex gap-2 mt-6 z-20 flex-wrap justify-center">
+        {projects.map((_, idx) => (
+          <button
+            key={idx}
+            onClick={() => setCurrentIndex(idx)}
+            className={`h-2 rounded-full transition-all duration-300 ${idx === currentIndex ? 'w-8 bg-primary' : 'w-2 bg-text-secondary/40 hover:bg-primary/60'
+              }`}
+            aria-label={`Go to slide ${idx + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const Projects = () => {
+  return (
     <section id="projects" className="projects-section py-20 bg-section-alt relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-tr from-purple-100/50 via-pink-100/30 to-indigo-100/40 dark:from-transparent dark:via-transparent dark:to-transparent pointer-events-none" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/[0.06] via-transparent to-transparent pointer-events-none" />
 
-      <div className="container mx-auto px-6 relative z-10 flex flex-col items-center">
+      <div className="container mx-auto px-4 sm:px-6 relative z-10 flex flex-col items-center">
         <motion.h2
           className="text-4xl font-bold mb-3 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent text-center"
           initial={{ opacity: 0, y: 40 }}
@@ -157,96 +245,26 @@ const Projects = () => {
           Projects
         </motion.h2>
         <motion.p
-          className="text-text-body mb-10 text-lg text-center max-w-xl"
+          className="text-text-body mb-6 text-lg text-center max-w-xl"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
           viewport={{ once: true }}
         >
-          A collection of things I've built — swipe or click to explore these full-stack apps and UI/UX prototypes.
+          A collection of things I've built — drag or click to explore along the arc.
         </motion.p>
 
-        {/* Innovative 3D Carousel */}
-        <div className="relative w-full flex flex-col items-center justify-center perspective-[1200px]">
-          <div className="relative w-full max-w-[280px] sm:max-w-[320px] md:max-w-sm lg:max-w-md h-[460px] md:h-[480px] flex items-center justify-center z-10">
-            {projects.map((project, index) => {
-              // Calculate shortest distance in a circular array
-              let relativeIndex = index - currentIndex;
-              if (relativeIndex > projects.length / 2) relativeIndex -= projects.length;
-              if (relativeIndex < -projects.length / 2) relativeIndex += projects.length;
+        {/* =========================================================================
+            EXISTING CAROUSEL (Preserved as requested - DO NOT DELETE)
+            Uncomment below to restore previous carousel if needed.
+           ========================================================================= */}
+        {/* <ExistingCarousel /> */}
 
-              // Only render items within a certain range to optimize performance
-              const isVisible = Math.abs(relativeIndex) <= 2;
-
-              if (!isVisible && projects.length > 5) return null;
-
-              const isActive = relativeIndex === 0;
-
-              return (
-                <motion.div
-                  key={project.id}
-                  className="absolute w-full h-full origin-center"
-                  initial={false}
-                  animate={{
-                    scale: isActive ? 1 : 1 - Math.abs(relativeIndex) * 0.12,
-                    opacity: isActive ? 1 : 1 - Math.abs(relativeIndex) * 0.35,
-                    x: `${relativeIndex * 50}%`,
-                    rotateY: relativeIndex * -10,   // Subtle 3D rotation
-                    z: -Math.abs(relativeIndex) * 60, // Move back in 3D space
-                    zIndex: projects.length - Math.abs(relativeIndex),
-                  }}
-                  transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
-                  style={{ transformStyle: 'preserve-3d', cursor: 'grab' }}
-                  whileTap={{ cursor: 'grabbing' }}
-                  drag="x"
-                  dragConstraints={{ left: 0, right: 0 }}
-                  dragElastic={0.2}
-                  onDragEnd={(e, { offset }) => {
-                    const swipe = offset.x;
-                    if (swipe < -40) {
-                      handleNext();
-                    } else if (swipe > 40) {
-                      handlePrev();
-                    }
-                  }}
-                >
-                  <ProjectCard project={project} index={index} isActive={isActive} />
-                </motion.div>
-              );
-            })}
-          </div>
-
-          {/* Carousel Controls */}
-          <div className="flex items-center gap-6 mt-8 md:mt-10 z-20">
-            <button
-              onClick={handlePrev}
-              className="p-3 md:p-4 rounded-full bg-card shadow-lg border border-card-border hover:bg-primary/10 text-primary transition-all hover:scale-110 active:scale-95"
-              aria-label="Previous Project"
-            >
-              <FaChevronLeft className="text-xl" />
-            </button>
-            <button
-              onClick={handleNext}
-              className="p-3 md:p-4 rounded-full bg-card shadow-lg border border-card-border hover:bg-primary/10 text-primary transition-all hover:scale-110 active:scale-95"
-              aria-label="Next Project"
-            >
-              <FaChevronRight className="text-xl" />
-            </button>
-          </div>
-
-          {/* Indicators */}
-          <div className="flex gap-2 mt-6 z-20 flex-wrap justify-center">
-            {projects.map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => setCurrentIndex(idx)}
-                className={`h-2 rounded-full transition-all duration-300 ${idx === currentIndex ? 'w-8 bg-primary' : 'w-2 bg-text-secondary/40 hover:bg-primary/60'
-                  }`}
-                aria-label={`Go to slide ${idx + 1}`}
-              />
-            ))}
-          </div>
-        </div>
+        {/* =========================================================================
+            NEW GSAP REFERENCE ARC CAROUSEL
+            Recreated from Scrolltide Arc Carousel reference video
+           ========================================================================= */}
+        <GSAPReferenceCarousel items={projects} />
       </div>
     </section>
   );
