@@ -1,6 +1,7 @@
 /* ==========================================================================
    GSAPReferenceCarousel.css
-   Recreating the Scrolltide Arc Carousel motion design language
+   Recreating the Scrolltide Arc Carousel motion design language with
+   optimized landscape card framing for web application screenshots.
    ========================================================================== */
 
 .arc-carousel-wrapper {
@@ -35,39 +36,115 @@
   pointer-events: auto;
 }
 
-/* Card Inner Surface */
+/* Card Inner Surface - Landscape Showcase Frame */
 .arc-card-inner {
   position: relative;
   width: 100%;
   height: 100%;
-  border-radius: 24px;
+  border-radius: 20px;
   overflow: hidden;
   will-change: transform, filter;
   transition: box-shadow 0.3s ease, border-color 0.3s ease;
   transform-origin: center center;
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: #111422;
+  box-shadow: 0 12px 35px -8px rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: #0d101d;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Card Glow for Active Apex Card */
 .arc-card-slot.is-active .arc-card-inner {
-  border-color: rgba(99, 102, 241, 0.45);
-  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7),
-              0 0 35px rgba(99, 102, 241, 0.25);
+  border-color: rgba(99, 102, 241, 0.55);
+  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.8),
+              0 0 35px rgba(99, 102, 241, 0.28);
 }
 
 .arc-card-slot:not(.is-active):hover .arc-card-inner {
-  border-color: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
-/* Card Image */
+/* Browser Mockup Top Bar */
+.arc-browser-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background: rgba(18, 22, 36, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  flex-shrink: 0;
+  height: 28px;
+}
+
+.arc-window-dots {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.arc-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  opacity: 0.75;
+}
+
+.arc-dot-red {
+  background-color: #ef4444;
+}
+
+.arc-dot-yellow {
+  background-color: #eab308;
+}
+
+.arc-dot-green {
+  background-color: #22c55e;
+}
+
+.arc-browser-url {
+  font-size: 10px;
+  font-family: monospace;
+  color: rgba(255, 255, 255, 0.5);
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.arc-card-counter {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.04em;
+}
+
+/* Card Media Container */
+.arc-card-media {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  overflow: hidden;
+  background: #090b12;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Card Image - Perfectly fitted with top alignment */
 .arc-card-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: top center;
   display: block;
   pointer-events: none;
+  transition: transform 0.4s ease;
+}
+
+.arc-card-slot.is-active:hover .arc-card-img {
+  transform: scale(1.02);
 }
 
 /* Fallback Gradient Card */
@@ -82,37 +159,6 @@
   color: rgba(255, 255, 255, 0.9);
   padding: 1.5rem;
   text-align: center;
-}
-
-/* Dark gradient overlay at bottom of card */
-.arc-card-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.05) 0%,
-    rgba(0, 0, 0, 0.2) 50%,
-    rgba(0, 0, 0, 0.85) 100%
-  );
-  pointer-events: none;
-}
-
-/* Subtle corner tag */
-.arc-card-index {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  padding: 3px 8px;
-  border-radius: 9999px;
-  background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  pointer-events: none;
 }
 
 /* Content block inside concave cradle of arc */
@@ -131,20 +177,20 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.75);
   transition: all 0.2s ease;
   cursor: pointer;
 }
 
 .arc-nav-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.18);
   color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.35);
   transform: scale(1.08);
 }
 
@@ -197,7 +243,7 @@
 }
 
 .arc-link-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.16);
   border-color: rgba(255, 255, 255, 0.35);
   color: #ffffff;
   transform: translateY(-1px);

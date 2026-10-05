@@ -12,6 +12,9 @@ import './GSAPReferenceCarousel.css';
  * "Cards riding a very large circle with the focused one upright at its apex,
  *  each tilted tangent to the curve. Position and tilt fall out of a single
  *  rotation, so there is no per-card trigonometry anywhere in it."
+ * 
+ * Optimized with landscape 16:10 browser frames so website screenshots fit
+ * cleanly with full headlines, diagrams, and controls visible without cropping.
  */
 const GSAPReferenceCarousel = ({ items = defaultProjects }) => {
   const count = items.length;
@@ -43,14 +46,14 @@ const GSAPReferenceCarousel = ({ items = defaultProjects }) => {
   const velocityRef = useRef(0);
   const lastTimeRef = useRef(0);
 
-  // Responsive geometry config
+  // Responsive geometry config tailored for landscape website screenshots
   const [config, setConfig] = useState({
-    radius: 920,
-    cardWidth: 220,
-    cardHeight: 300,
-    stepAngle: 16.5,
-    stageHeight: 680,
-    infoTop: 360,
+    radius: 1020,
+    cardWidth: 320,
+    cardHeight: 215,
+    stepAngle: 18.5,
+    stageHeight: 650,
+    infoTop: 295,
   });
 
   // Calculate responsive parameters based on viewport width
@@ -59,30 +62,30 @@ const GSAPReferenceCarousel = ({ items = defaultProjects }) => {
       const w = window.innerWidth;
       if (w >= 1024) {
         setConfig({
-          radius: 920,
-          cardWidth: 220,
-          cardHeight: 300,
-          stepAngle: 16.5,
-          stageHeight: 680,
-          infoTop: 360,
+          radius: 1020,
+          cardWidth: 320,
+          cardHeight: 215,
+          stepAngle: 18.5,
+          stageHeight: 650,
+          infoTop: 295,
         });
       } else if (w >= 640) {
         setConfig({
-          radius: 720,
-          cardWidth: 185,
-          cardHeight: 255,
-          stepAngle: 19,
-          stageHeight: 620,
-          infoTop: 305,
+          radius: 820,
+          cardWidth: 260,
+          cardHeight: 180,
+          stepAngle: 21,
+          stageHeight: 590,
+          infoTop: 250,
         });
       } else {
         setConfig({
-          radius: 500,
-          cardWidth: 155,
-          cardHeight: 215,
-          stepAngle: 24,
-          stageHeight: 560,
-          infoTop: 255,
+          radius: 550,
+          cardWidth: 220,
+          cardHeight: 155,
+          stepAngle: 25,
+          stageHeight: 520,
+          infoTop: 220,
         });
       }
     };
@@ -103,6 +106,21 @@ const GSAPReferenceCarousel = ({ items = defaultProjects }) => {
   }, [count]);
 
   /**
+   * Helper: Extracts a clean short display domain for the browser header
+   */
+  const getDisplayDomain = (project) => {
+    if (project.liveDemo) {
+      try {
+        const url = new URL(project.liveDemo);
+        return url.hostname.replace('www.', '');
+      } catch {
+        // fallback
+      }
+    }
+    return `${project.title.toLowerCase().replace(/[^a-z0-9]/g, '')}.app`;
+  };
+
+  /**
    * Renders the cards at the current proxy.progress position.
    * Directly sets GPU-accelerated transforms on the DOM elements without React re-rendering.
    */
@@ -119,8 +137,8 @@ const GSAPReferenceCarousel = ({ items = defaultProjects }) => {
       const absOffset = Math.abs(offset);
       const angle = offset * stepAngle;
 
-      // Depth hierarchy: apex card is scale 1.14, neighbors scale down smoothly
-      const scale = Math.max(0.48, 1.14 - absOffset * 0.135);
+      // Depth hierarchy: apex card is scale 1.12, neighbors scale down smoothly
+      const scale = Math.max(0.5, 1.12 - absOffset * 0.13);
 
       // Opacity fades out towards the edges; beyond 4.2 items away is invisible
       const opacity = absOffset > 4.2 ? 0 : Math.max(0, 1 - Math.pow(absOffset / 4.0, 2.1));
@@ -288,7 +306,6 @@ const GSAPReferenceCarousel = ({ items = defaultProjects }) => {
     let target = proxy.current.progress;
 
     if (Math.abs(v) > 0.4) {
-      // Flicked in a direction
       const inertiaDelta = -Math.sign(v) * Math.min(2, Math.max(1, Math.round(Math.abs(v) * 1.5)));
       target = Math.round(target + inertiaDelta);
     } else {
@@ -382,32 +399,42 @@ const GSAPReferenceCarousel = ({ items = defaultProjects }) => {
           >
             <div
               ref={(el) => (innerRefs.current[index] = el)}
-              className="arc-card-inner relative overflow-hidden"
+              className="arc-card-inner"
             >
-              {project.image ? (
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="arc-card-img"
-                  loading="lazy"
-                />
-              ) : (
-                <div className="arc-card-fallback">
-                  <span className="text-4xl font-bold opacity-30 mb-2">
-                    {project.title.charAt(0)}
-                  </span>
-                  <span className="text-xs font-medium opacity-70">
-                    {project.title}
-                  </span>
+              {/* Browser Window Bar */}
+              <div className="arc-browser-bar">
+                <div className="arc-window-dots">
+                  <span className="arc-dot arc-dot-red" />
+                  <span className="arc-dot arc-dot-yellow" />
+                  <span className="arc-dot arc-dot-green" />
                 </div>
-              )}
+                <span className="arc-browser-url">
+                  {getDisplayDomain(project)}
+                </span>
+                <span className="arc-card-counter">
+                  {String(index + 1).padStart(2, '0')}/{String(count).padStart(2, '0')}
+                </span>
+              </div>
 
-              {/* Shading Overlay */}
-              <div className="arc-card-overlay" />
-
-              {/* Index Badge */}
-              <div className="arc-card-index">
-                {String(index + 1).padStart(2, '0')} / {String(count).padStart(2, '0')}
+              {/* Media Preview Container */}
+              <div className="arc-card-media">
+                {project.image ? (
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="arc-card-img"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="arc-card-fallback">
+                    <span className="text-4xl font-bold opacity-30 mb-2">
+                      {project.title.charAt(0)}
+                    </span>
+                    <span className="text-xs font-medium opacity-70">
+                      {project.title}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
