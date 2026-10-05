@@ -255,3 +255,59 @@
   border-radius: 2px;
   transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
+
+/* ==========================================================================
+   Details Modal Custom Styling & Animations
+   ========================================================================== */
+
+.modal-backdrop-anim {
+  animation: modalOverlayFade 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalOverlayFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-card-anim {
+  animation: modalCardPopIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalCardPopIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Ultra-thin elegant scrollbar for modal content */
+.modal-custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
+}
+
+.modal-custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.modal-custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.28);
+  border-radius: 9999px;
+}
+
+.modal-custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.5);
+}
+
