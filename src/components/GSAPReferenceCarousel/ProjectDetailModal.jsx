@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { FaTimes, FaExternalLinkAlt, FaGithub, FaLinkedin } from 'react-icons/fa';
 
 const techColors = {
@@ -30,6 +31,12 @@ const getTechClass = (tech) =>
   techColors[tech] || 'bg-primary/10 text-primary border-primary/30';
 
 const ProjectDetailModal = ({ project, isOpen, onClose }) => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') onClose();
@@ -44,24 +51,26 @@ const ProjectDetailModal = ({ project, isOpen, onClose }) => {
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen || !project) return null;
+  if (!isOpen || !project || !mounted) return null;
 
-  return (
+  // Render via React Portal directly into document.body to escape any parent stacking contexts
+  // and guarantee it renders in front of the fixed navbar with z-[9999]
+  return createPortal(
     <div
-      className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-md transition-opacity duration-300 animate-fadeIn"
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 pt-24 sm:pt-28 pb-10 bg-black/85 backdrop-blur-md overflow-y-auto transition-opacity duration-300"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title"
     >
       <div
-        className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-card dark:bg-[#121424] border border-white/10 rounded-3xl shadow-2xl text-text-main p-6 sm:p-8"
+        className="relative w-full max-w-2xl max-h-[85vh] my-auto overflow-y-auto bg-card dark:bg-[#121424] border border-white/15 rounded-3xl shadow-[0_25px_70px_rgba(0,0,0,0.85)] text-text-main p-6 sm:p-8"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+          className="absolute top-5 right-5 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer z-10"
           aria-label="Close dialog"
         >
           <FaTimes className="text-lg" />
@@ -73,7 +82,7 @@ const ProjectDetailModal = ({ project, isOpen, onClose }) => {
             <img
               src={project.image}
               alt={project.title}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover object-top"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
           </div>
@@ -82,7 +91,7 @@ const ProjectDetailModal = ({ project, isOpen, onClose }) => {
         {/* Title */}
         <h3
           id="modal-title"
-          className="text-2xl sm:text-3xl font-bold mb-3 text-text-main bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"
+          className="text-2xl sm:text-3xl font-bold mb-3 text-text-main bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent pr-8"
         >
           {project.title}
         </h3>
@@ -143,7 +152,8 @@ const ProjectDetailModal = ({ project, isOpen, onClose }) => {
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

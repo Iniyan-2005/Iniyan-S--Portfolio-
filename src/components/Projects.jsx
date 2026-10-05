@@ -245,7 +245,7 @@ const Projects = () => {
           Projects
         </motion.h2>
         <motion.p
-          className="text-text-body mb-6 text-lg text-center max-w-xl"
+          className="text-text-body mb-4 text-lg text-center max-w-xl"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
@@ -259,11 +259,13 @@ const Projects = () => {
             Uncomment below to restore previous carousel if needed.
            ========================================================================= */}
         {/* <ExistingCarousel /> */}
+      </div>
 
-        {/* =========================================================================
-            NEW GSAP REFERENCE ARC CAROUSEL
-            Recreated from Scrolltide Arc Carousel reference video
-           ========================================================================= */}
+      {/* =========================================================================
+          NEW GSAP REFERENCE ARC CAROUSEL
+          Full viewport width edge-to-edge carousel matching reference video
+         ========================================================================= */}
+      <div className="w-full relative z-10 overflow-hidden">
         <GSAPReferenceCarousel items={projects} />
       </div>
     </section>

@@ -60,7 +60,16 @@ const GSAPReferenceCarousel = ({ items = defaultProjects }) => {
   useEffect(() => {
     const updateConfig = () => {
       const w = window.innerWidth;
-      if (w >= 1024) {
+      if (w >= 1440) {
+        setConfig({
+          radius: 1180,
+          cardWidth: 350,
+          cardHeight: 235,
+          stepAngle: 17.5,
+          stageHeight: 680,
+          infoTop: 320,
+        });
+      } else if (w >= 1024) {
         setConfig({
           radius: 1020,
           cardWidth: 320,
@@ -71,7 +80,7 @@ const GSAPReferenceCarousel = ({ items = defaultProjects }) => {
         });
       } else if (w >= 640) {
         setConfig({
-          radius: 820,
+          radius: 800,
           cardWidth: 260,
           cardHeight: 180,
           stepAngle: 21,
@@ -80,12 +89,12 @@ const GSAPReferenceCarousel = ({ items = defaultProjects }) => {
         });
       } else {
         setConfig({
-          radius: 550,
-          cardWidth: 220,
-          cardHeight: 155,
+          radius: 540,
+          cardWidth: 215,
+          cardHeight: 150,
           stepAngle: 25,
           stageHeight: 520,
-          infoTop: 220,
+          infoTop: 215,
         });
       }
     };
